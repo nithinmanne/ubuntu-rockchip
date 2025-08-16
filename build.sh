@@ -18,6 +18,7 @@ Optional arguments:
   -h,  --help            show this help message and exit
   -c,  --clean           clean the build directory
   -ko, --kernel-only     only compile the kernel
+  --arm-kernel-only      only compile the arm kernel
   -uo, --uboot-only      only compile uboot
   -ro, --rootfs-only     only build rootfs
   -l,  --launchpad       use kernel and uboot from launchpad repo
@@ -64,6 +65,10 @@ while [ "$#" -gt 0 ]; do
             ;;
         -ko|--kernel-only)
             export KERNEL_ONLY=Y
+            shift
+            ;;
+        --arm-kernel-only)
+            export ARM_KERNEL_ONLY=Y
             shift
             ;;
         -uo|--uboot-only)
@@ -175,6 +180,15 @@ if [ "${KERNEL_ONLY}" == "Y" ]; then
         exit 1
     fi
     ./scripts/build-kernel.sh
+    exit 0
+fi
+
+if [ "${ARM_KERNEL_ONLY}" == "Y" ]; then
+    if [ -z "${SUITE}" ]; then
+        usage
+        exit 1
+    fi
+    ./scripts/build-arm-kernel.sh
     exit 0
 fi
 
